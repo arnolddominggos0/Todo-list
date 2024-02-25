@@ -53,6 +53,7 @@ export default {
       console.log(event)
 
       // pass input to action
+      // determine
       if (this.editing === false) {
         this.addList({ ...this.input })
       } else {
@@ -72,7 +73,9 @@ export default {
     toggleCompleted(index) {
       const detail = this.getDetail(index)
       this.editIndex(index, {
+        // pass all entries in detail object
         ...detail,
+        // take completed value then toggle it
         completed: !detail.completed
       })
     },
@@ -102,7 +105,7 @@ export default {
       <input v-model="input.completed" type="checkbox" /> Completed
       <br />
 
-      <button type="submit">{{ editing !== false ? 'Edit' : 'Add'}}</button>      
+      <button type="submit">{{ editing !== false ? 'Edit' : 'Add' }}</button>
       <button type="reset">Cancel</button>
     </form>
 
