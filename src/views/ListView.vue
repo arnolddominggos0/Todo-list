@@ -14,7 +14,8 @@ const initialInput = {
 export default {
   name: 'ListView',
   data: () => ({
-    input: { ...initialInput }
+    input: { ...initialInput },
+    editing: false
   }),
   // declate component
   components: {
@@ -23,11 +24,11 @@ export default {
 
   computed: {
     // Import the getList state from the store
-    ...mapState(useListStore, ['getList'])
+    ...mapState(useListStore, ['getList', 'getDetail'])
   },
   methods: {
     // Import the a$addList action from the store
-    ...mapActions(useListStore, ['a$addList', 'a$removeIndex']),
+    ...mapActions(useListStore, ['a$addList', 'a$editIndex', 'a$removeIndex']),
     // import all defined action via mapActions helper
     addList() {
       // Check if the name is not empty or only contains spaces
@@ -38,15 +39,34 @@ export default {
       }
     },
 
+    // reset form
+    resetForm() {
+      // Reset Input with initial value
+      Object.assign(this.input, initialInput)
+      // reset editing state
+      this.editing = false
+    },
+
+    //submit form
     addForm(event) {
       // Log the event to the console
       console.log(event)
 
-      // Call the addList method to add a new list
-      this.addList({ ...this.input })
+      // pass input to action
+      if (this.editing === false) {
+        this.addList({ ...this.input })
+      } else {
+        this.editIndex(this.editing, { ...this.input })
+      }
 
-      // Reset the input with initial values
-      Object.assign(this.input, initialInput)
+      // call reset form
+      this.resetForm()
+    },
+    detailList(index) {
+      // set editing to true from index params
+      this.editing = index
+      // set input value from getters by index params
+      this.input = { ...this.getDetail(index) }
     },
 
     // Dummy method for logging to console
@@ -61,13 +81,14 @@ export default {
   <div>
     <h1>List</h1>
 
-    <form @submit.prevent="($event) => addForm($event)" method="post">
+    <form @submit.prevent="($event) => addForm($event)" method="post" @reset="() => resetForm()">
       <!-- use component using kebab-case -->
-      <base-input v-model="input.name" class="input" placeholder="add new"></base-input>
+      <base-input v-model="input.name" class="input" placeholder="add new" required></base-input>
       <br />
 
       <!-- can be used many times -->
-      <base-input v-model="input.description" class="input" placeholder="add desc"></base-input>
+      <base-input v-model="input.description" class="input" placeholder="description" required>
+      </base-input>
       <br />
 
       <!-- Checkbox for completed with v-model binding -->
@@ -75,12 +96,20 @@ export default {
       <br />
 
       <button type="submit">Add</button>
+      <button type="reset">Cancel</button>
     </form>
 
     <ol class="list">
       <template v-for="(item, index) in getList" :key="index">
         <li>
-          <button class="red" @click="($event) => removeIndex(index)">&times;</button>
+          <!-- trigger delete by index -->
+          <button class="red" @click="() => removeIndex(index)" :disabled="editing !== false">
+            &times;
+          </button>
+          <!-- trigger edit by index -->
+          <button class="orange" @click="() => detailList(index)" :disabled="editing !== false">
+            &#9998;
+          </button>
           {{ item.name }}
           {{ item?.description ? `- ${item.description}` : '' }}
         </li>
@@ -109,5 +138,8 @@ div {
 
 button.red {
   color: red;
+}
+button.orange {
+  color: orange;
 }
 </style>
