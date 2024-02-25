@@ -27,8 +27,8 @@ export default {
   },
   methods: {
     // Import the a$addList action from the store
-    ...mapActions(useListStore, ['a$addList']),
-
+    ...mapActions(useListStore, ['a$addList', 'a$removeIndex']),
+    // import all defined action via mapActions helper
     addList() {
       // Check if the name is not empty or only contains spaces
       if (this.input.name && this.input.name.trim() !== '') {
@@ -80,6 +80,7 @@ export default {
     <ol class="list">
       <template v-for="(item, index) in getList" :key="index">
         <li>
+          <button class="red" @click="($event) => removeIndex(index)">&times;</button>
           {{ item.name }}
           {{ item?.description ? `- ${item.description}` : '' }}
         </li>
@@ -104,5 +105,9 @@ div {
 
 .list {
   margin-block: 0.5rem;
+}
+
+button.red {
+  color: red;
 }
 </style>
