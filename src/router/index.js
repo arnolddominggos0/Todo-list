@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
-import { useAuthStore } from '@/stores/auth'
+import { d$auth } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -19,7 +19,6 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue')
     },
-
     {
       path: '/list',
       name: 'list',
@@ -57,7 +56,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   // get auth state
-  const loggedIn = useAuthStore().isLoggedIn
+  const loggedIn = d$auth().isLoggedIn
   // if target route requires auth & no logged in user
   // redirect to login
   if (to.meta.auth && !loggedIn) {

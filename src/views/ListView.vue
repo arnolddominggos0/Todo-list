@@ -28,8 +28,8 @@ export default {
   },
   methods: {
     // Import the a$addList action from the store
-    ...mapActions(useListStore, ['a$addList', 'a$editIndex', 'a$removeIndex']),
-    // import all defined action via mapActions helper
+    ...mapActions(useListStore, ['a$list', 'a$add', 'editIndex', 'removeIndex']),
+     // import all defined action via mapActions helper
     addList() {
       // Check if the name is not empty or only contains spaces
       if (this.input.name && this.input.name.trim() !== '') {
