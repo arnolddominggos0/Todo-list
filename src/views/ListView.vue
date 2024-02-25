@@ -5,8 +5,15 @@ export default {
   }),
 
   methods: {
+    addList() {
+      if (this.input.name && this.input.name.trim() !== '') {
+        this.list.push({ ...this.input })
+        this.input.name = ''
+      }
+    },
+
     log() {
-      console.log(this.input)
+      console.log('Logging to Console')
     }
   }
 }
@@ -14,9 +21,9 @@ export default {
 
 <template>
   <div>
-    <input type="text" v-model="input.title" />
+    <input v-model="input.name" type="text" @keyup.enter="addList" />
 
-    <button @click="log()">Log to Console</button>
+    <button @click="log">Log to Console</button>
   </div>
 </template>
 
@@ -25,9 +32,9 @@ input {
   height: 2rem;
 }
 button {
-    height: 2rem;
+  height: 2rem;
 }
 div {
-    display: grid;
+  display: grid;
 }
 </style>
