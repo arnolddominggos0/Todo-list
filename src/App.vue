@@ -1,8 +1,9 @@
 <script setup>
+// use script setup api
 import { computed } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
 
+import HelloWorld from './components/HelloWorld.vue'
 
 // import auth store
 import { d$auth } from '@/stores/auth'
@@ -15,7 +16,13 @@ const username = computed(() => d$auth().g$user?.id)
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+    <img
+      alt="Vue logo"
+      class="logo"
+      src="@/assets/logo.svg"
+      width="125"
+      height="125"
+    />
 
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
@@ -24,7 +31,10 @@ const username = computed(() => d$auth().g$user?.id)
         <RouterLink to="/">Home</RouterLink>
         <!-- programmatic navigation using router param -->
         <RouterLink :to="{ name: 'list' }">List</RouterLink>
-        <RouterLink :to="{ name: 'Authenticated', params: { id: username ?? '' } }">
+        <!-- more complex dynamic route with param -->
+        <RouterLink
+          :to="{ name: 'Authenticated', params: { id: username ?? '' } }"
+        >
           Profile
         </RouterLink>
         <RouterLink to="/about">About</RouterLink>

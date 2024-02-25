@@ -1,33 +1,56 @@
 import { defineStore } from 'pinia'
 
+import * as s$todo from '@/services/todo'
+
 export const useListStore = defineStore({
   id: 'list',
-  // state is same as data in options api
   state: () => ({
-    list: [
-      {
-        name: 'First List'
-      },
-      {
-        name: 'Second List'
-      }
-    ]
+    list: []
   }),
   actions: {
-    addList(data) {
-      this.list = [...this.list, data]
+    async a$list() {
+      try {
+        const { data } = await s$todo.list()
+        this.list = data
+      } catch ({ message, error }) {
+        throw message ?? error
+      }
+    },
+    async a$add(data) {
+      try {
+        await s$todo.add(data)
+        await this.a$list()
+      } catch ({ message, error }) {
+        throw message ?? error
+      }
+    },
+    async a$edit({ id, data }) {
+      try {
+        await s$todo.edit(id, data)
+        await this.a$list()
+      } catch ({ message, error }) {
+        throw message ?? error
+      }
+    },
+    async a$remove(id) {
+      try {
+        await s$todo.remove(id)
+        await this.a$list()
+      } catch ({ message, error }) {
+        throw message ?? error
+      }
     },
     removeIndex(index) {
-      this.list = this.list.filter((val, idx) => index !== idx)
+      const id = this.list[index].id 
+      this.a$remove(id)
     },
     editIndex(index, data) {
-      this.list[index] = data
+      const id = this.list[index].id 
+      this.a$edit({ id, data })
     }
   },
   getters: {
     getList: ({ list }) => list,
-    getDetail: ({ list }) => {
-      return (index) => list[index]
-    }
+    getDetail: ({ list }) => (index) => list[index]
   }
 })

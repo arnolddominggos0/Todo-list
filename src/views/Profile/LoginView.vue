@@ -1,14 +1,10 @@
 <script>
-import { d$auth } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth'
 import { mapActions, mapState } from 'pinia'
-
 import BaseInput from '@/components/BaseInput.vue'
-
 const initialInput = {
-  username: '',
-  password: ''
+  username: ''
 }
-
 export default {
   data: () => ({
     input: { ...initialInput }
@@ -17,65 +13,38 @@ export default {
     BaseInput
   },
   computed: {
-    ...mapState(d$auth, ['g$user', 'isLoggedIn'])
+    ...mapState(useAuthStore, ['getUsername'])
   },
   methods: {
-    ...mapActions(d$auth, ['a$login', 'a$setUser']),
+    ...mapActions(useAuthStore, ['setUsername']),
     resetForm() {
       Object.assign(this.input, initialInput)
     },
-    async submitForm() {
-      try {
-        await this.a$login(this.input)
-
-        // set user based on cookie
-        this.a$setUser()
-
-        this.resetForm()
-
-        // redirect to profile after input username
-        this.$router.replace({
-          name: 'Authenticated',
-          params: { id: this.g$user.id }
-        })
-      } catch (error) {
-        console.error(error)
-      }
+    submitForm() {
+      this.setUsername(this.input.username)
+      this.resetForm()
+      // redirect to profile after input username
+      this.$router.replace({
+        name: 'Authenticated',
+        params: { id: this.getUsername }
+      })
     }
   }
 }
 </script>
-
 <template>
   <div>
     <h1>Login</h1>
-
     <!-- conditional rendering using v-if directive -->
     <form
-      v-if="!isLoggedIn"
+      v-if="!getUsername"
       method="post"
       @submit.prevent="() => submitForm()"
       @reset="() => resetForm()"
     >
-      <base-input
-        class="input"
-        v-model="input.username"
-        placeholder="input username"
-        required
-      />
-      <br />
-      <base-input
-        class="input"
-        v-model="input.password"
-        placeholder="input password"
-        type="password"
-        required
-      />
-      <br />
-      <button type="submit">Login</button>
+      <base-input class="input" v-model="input.username" placeholder="input username" required />
     </form>
-
     <!-- conditional rendering using v-else directive -->
-    <h3 v-else>{{ g$user?.id }}</h3>
+    <h3 v-else>{{ getUsername }}</h3>
   </div>
 </template>
