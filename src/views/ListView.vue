@@ -1,17 +1,26 @@
 <script>
-export default {
-  data: () => ({
-    input: {}
-  }),
+import { useListStore } from '@/stores/list'
+import { mapState, mapActions } from 'pinia'
 
+export default {
+  name: 'ListView',
+  data: () => ({
+    input: {
+      name: ''
+    }
+  }),
+  computed: {
+    ...mapState(useListStore, ['getList'])
+  },
   methods: {
+    ...mapActions(useListStore, ['a$addList']),
     addList() {
       if (this.input.name && this.input.name.trim() !== '') {
-        this.list.push({ ...this.input })
+        // Memanggil aksi a$addList dari store
+        this.a$addList({ ...this.input })
         this.input.name = ''
       }
     },
-
     log() {
       console.log('Logging to Console')
     }
@@ -21,9 +30,15 @@ export default {
 
 <template>
   <div>
+    <h1>List</h1>
     <input v-model="input.name" type="text" @keyup.enter="addList" />
+    <button @click="log">Login</button>
 
-    <button @click="log">Log to Console</button>
+    <ol>
+      <template v-for="(item, index) in getList" :key="index">
+        <li>{{ item.name }}</li>
+      </template>
+    </ol>
   </div>
 </template>
 
