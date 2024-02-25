@@ -31,10 +31,21 @@ export default {
 <template>
   <div>
     <h1>List</h1>
-    <input v-model="input.name" type="text" @keyup.enter="addList" />
+    <input
+      class="input"
+      v-model="input.name"
+      type="text"
+      @keyup.enter="
+        ($event) => {
+          addList({ ...input })
+          input.name = ''
+        }
+      "
+      placeholder="add new list"
+    />
     <button @click="log">Login</button>
 
-    <ol>
+    <ol class="list">
       <template v-for="(item, index) in getList" :key="index">
         <li>{{ item.name }}</li>
       </template>
@@ -44,12 +55,16 @@ export default {
 
 <style lang="scss" scoped>
 input {
-  height: 2rem;
+  padding: 0.5rem;
+  font-size: 1rem;
 }
 button {
   height: 2rem;
 }
 div {
   display: grid;
+}
+list {
+  margin-block: 0.5rem;
 }
 </style>
