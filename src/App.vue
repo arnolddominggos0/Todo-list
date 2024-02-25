@@ -30,7 +30,7 @@ const username = computed(() => d$auth().g$user?.id)
       <nav>
         <RouterLink to="/">Home</RouterLink>
         <!-- programmatic navigation using router param -->
-        <RouterLink :to="{ name: 'list' }">List</RouterLink>
+        <RouterLink :to="{ name: 'list' }">Todo</RouterLink>
         <!-- more complex dynamic route with param -->
         <RouterLink
           :to="{ name: 'Authenticated', params: { id: username ?? '' } }"
