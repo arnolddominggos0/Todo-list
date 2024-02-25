@@ -68,7 +68,14 @@ export default {
       // set input value from getters by index params
       this.input = { ...this.getDetail(index) }
     },
-
+    // toggle completed
+    toggleCompleted(index) {
+      const detail = this.getDetail(index)
+      this.editIndex(index, {
+        ...detail,
+        completed: !detail.completed
+      })
+    },
     // Dummy method for logging to console
     log() {
       console.log('Logging to Console')
@@ -101,7 +108,7 @@ export default {
 
     <ol class="list">
       <template v-for="(item, index) in getList" :key="index">
-        <li>
+        <li @dblclick="() => toggleCompleted(index)" :class="{ strike: item.completed }">
           <!-- trigger delete by index -->
           <button class="red" @click="() => removeIndex(index)" :disabled="editing !== false">
             &times;
@@ -141,5 +148,9 @@ button.red {
 }
 button.orange {
   color: orange;
+}
+
+.strike {
+  text-decoration: line-through;
 }
 </style>
