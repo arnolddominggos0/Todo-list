@@ -17,11 +17,17 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/AboutView.vue')
     },
-    
+
     {
       path: '/list',
       name: 'list',
       component: () => import('@/views/ListView.vue')
+    },
+    {
+      // get all routes
+      path: '/:pathMatch(.*)*',
+      name: 'Match All',
+      component: () => import('@/views/NotFoundView.vue')
     }
   ]
 })
